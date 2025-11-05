@@ -6,7 +6,7 @@ SDK_ROOT := ../urf_lib/nrf_usdk52
 PROJ_DIR := .
 
 $(OUTPUT_DIRECTORY)/uECG5.out: \
-  LINKER_SCRIPT  := uECG_nrf52.ld 
+  LINKER_SCRIPT  := uECG_nrf52.ld
 
 # Source files common to all targets
 SRC_FILES += \
@@ -61,8 +61,8 @@ CFLAGS += -mthumb -mabi=aapcs
 CFLAGS +=  -Wall
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 # keep every function in a separate section, this allows linker to discard unused ones
-CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
-CFLAGS += -fno-builtin -fshort-enums 
+CFLAGS += -ffunction-sections -fdata-sections -fcommon -fno-strict-aliasing
+CFLAGS += -fno-builtin -fshort-enums
 
 # C++ flags common to all targets
 CXXFLAGS += $(OPT)
@@ -105,5 +105,3 @@ TEMPLATE_PATH := $(SDK_ROOT)/gcc
 include $(TEMPLATE_PATH)/Makefile.common
 
 $(foreach target, $(TARGETS), $(call define_target, $(target)))
-
-

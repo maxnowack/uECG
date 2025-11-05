@@ -52,7 +52,7 @@ void switch_to_fr32()
 	rf_disable();
 //	fr_poweroff();
 	rf_init(21, 1000, 0);
-	rf_listen();	
+	rf_listen();
 }
 
 void switch_to_fr64()
@@ -60,7 +60,7 @@ void switch_to_fr64()
 	rf_disable();
 //	fr_poweroff();
 	rf_init(21, 1000, 3);
-	rf_listen();	
+	rf_listen();
 }
 
 uint32_t prev_short_press_time = 0;
@@ -83,7 +83,7 @@ void process_btn_short()
 		dev_config.radio_mode = radio_mode_direct32;
 	else
 		dev_config.radio_mode = radio_mode_ble_adv;
-		
+
 	radio_set_mode(dev_config.radio_mode);
 	if(dev_config.radio_mode == radio_mode_ble_adv)
 	{
@@ -127,9 +127,9 @@ void process_btn_long()
 	else
 	{
 		dev_config.signal_measurement_mode = signal_measurement_ecg;
-		mcp_fft_mode(0);		
+		mcp_fft_mode(0);
 	}
-		
+
 	if(dev_config.signal_measurement_mode == signal_measurement_ecg)
 	{
 		leds_set(0, 255, 255);
@@ -157,14 +157,14 @@ void process_btn_long()
 int main(void)
 {
 	int init_ok = 1;
-	
+
 	fast_clock_start();
 	time_start();
 	board_config_init();
 	device_config_init();
 	board_power_on();
 	board_analog_on();
-	
+
 	leds_init(board_config.led_r, board_config.led_g, board_config.led_b, board_config.out_driver);
 
 	for(int x = 0; x < 3; x++)
@@ -176,7 +176,7 @@ int main(void)
 	{
 		leds_pulse(0, 255*(board_config.version == 4), 255*(board_config.version == 5), 100);
 		delay_ms(200);
-		
+
 //		leds_set(0, 255*(x%2)*(board_config.version == 4), 255*(x%2)*(board_config.version == 5));
 //		delay_ms(100);
 	}
@@ -184,9 +184,9 @@ int main(void)
 
 	leds_set(0, 0, 0);
 	delay_ms(300);
-	
+
 	spi_init();
-	
+
 	mcp3911_init(board_config.mcp_CS, board_config.mcp_DR);
 	if(!mcp3911_is_ok())
 	{
@@ -209,7 +209,7 @@ int main(void)
 //	leds_set(0, 255, 0);
 
 	delay_ms(100);
-	
+
 	ecg_processor_init();
 
 	radio_fill_ble_services();
@@ -228,7 +228,7 @@ int main(void)
 	}
 
 	dev_state.battery_mv = board_read_battery();
-	
+
 	NRF_WDT->CRV = 4*32768; //4 seconds timeout - impossible to miss during normal operation
 	NRF_WDT->TASKS_START = 1;
 
@@ -236,43 +236,43 @@ int main(void)
 	{
 		NRF_WDT->RR[0] = 0x6E524635; //reload watchdog
 		uint32_t ms = millis();
-		
-		
-		if(board_read_button())
-		{
-			dev_state.led_overriden = 1;
-			if(!dev_state.btn_pressed)
-			{
-				dev_state.btn_pressed = 1;
-				dev_state.btn_on_time = ms;
-			}
-			if(ms - dev_state.btn_on_time > 25 && ms - dev_state.btn_on_time < 500)
-				leds_set(0, 0, 255);
-			if(ms - dev_state.btn_on_time > 500 && ms - dev_state.btn_on_time < 2000)
-				leds_set(0, 255, 0);
-			if(ms - dev_state.btn_on_time > 2000)
-				leds_set(255, 0, 0);
-		}
-		else
-		{
-			dev_state.led_overriden = 0;
-			if(dev_state.btn_pressed)
-			{
-				dev_state.btn_pressed = 0;
-				uint32_t btn_time = ms - dev_state.btn_on_time;
-				if(btn_time > 25) //ignore too short presses - noise
-				{
-					if(btn_time < 500)
-						process_btn_short();
-					else if(btn_time < 2000)
-						process_btn_long();
-					else
-					{
-						board_power_off();
-					}
-				}
-			}
-		}
+
+
+		// if(board_read_button())
+		// {
+		// 	dev_state.led_overriden = 1;
+		// 	if(!dev_state.btn_pressed)
+		// 	{
+		// 		dev_state.btn_pressed = 1;
+		// 		dev_state.btn_on_time = ms;
+		// 	}
+		// 	if(ms - dev_state.btn_on_time > 25 && ms - dev_state.btn_on_time < 500)
+		// 		leds_set(0, 0, 255);
+		// 	if(ms - dev_state.btn_on_time > 500 && ms - dev_state.btn_on_time < 2000)
+		// 		leds_set(0, 255, 0);
+		// 	if(ms - dev_state.btn_on_time > 2000)
+		// 		leds_set(255, 0, 0);
+		// }
+		// else
+		// {
+		// 	dev_state.led_overriden = 0;
+		// 	if(dev_state.btn_pressed)
+		// 	{
+		// 		dev_state.btn_pressed = 0;
+		// 		uint32_t btn_time = ms - dev_state.btn_on_time;
+		// 		if(btn_time > 25) //ignore too short presses - noise
+		// 		{
+		// 			if(btn_time < 500)
+		// 				process_btn_short();
+		// 			else if(btn_time < 2000)
+		// 				process_btn_long();
+		// 			else
+		// 			{
+		// 				board_power_off();
+		// 			}
+		// 		}
+		// 	}
+		// }
 		if(mcp3911_read())
 		{
 			process_mcp_data();
@@ -318,9 +318,9 @@ int main(void)
 //				bmi160_read_temp();
 			}
 		}
-		
+
 		radio_process_sending();
-		
+
 		if(ms - dev_state.battery_update_time > 503)
 		{
 			dev_state.battery_mv = (7*dev_state.battery_mv + board_read_battery())/8;
@@ -340,4 +340,3 @@ int main(void)
 	}
 
 }
-

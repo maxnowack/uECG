@@ -12,25 +12,25 @@ sDeviceConfig dev_config;
 void board_config_init()
 {
 	//in version 4, pin 22 is floating, in version 5 it is tied to ground
-	board_config.version_id_pin = 22;
-	sNRF_GPIO_config version_pin;
-	version_pin.conf = 0;
-	version_pin.is_output = 0;
-	version_pin.pull = 0b11;
-	NRF_GPIO->PIN_CNF[board_config.version_id_pin] = version_pin.conf;
-	int cnt_up = 0;
-	for(int x = 0; x < 10; x++)
-		if(NRF_GPIO->IN & (1<<board_config.version_id_pin)) cnt_up++;
-	if(cnt_up > 8) //high state -> old version
-		board_config.version = 4;
-	else
-		board_config.version = 5; //only two possibilities as of now
+	// board_config.version_id_pin = 22;
+	// sNRF_GPIO_config version_pin;
+	// version_pin.conf = 0;
+	// version_pin.is_output = 0;
+	// version_pin.pull = 0b11;
+	// NRF_GPIO->PIN_CNF[board_config.version_id_pin] = version_pin.conf;
+	//int cnt_up = 0;
+	//for(int x = 0; x < 10; x++)
+	//	if(NRF_GPIO->IN & (1<<board_config.version_id_pin)) cnt_up++;
+	//if(cnt_up > 8) //high state -> old version
+	//	board_config.version = 4;
+	//else
+	board_config.version = 5; //only two possibilities as of now
 
-	version_pin.pull = 0; //turn off pullup so current won't leak there for ver 5
-	NRF_GPIO->PIN_CNF[board_config.version_id_pin] = version_pin.conf;
-	
+	// version_pin.pull = 0; //turn off pullup so current won't leak there for ver 5
+	// NRF_GPIO->PIN_CNF[board_config.version_id_pin] = version_pin.conf;
+
 	board_config.unit_id = NRF_FICR->DEVICEID[1];
-	
+
 	if(board_config.version == 4)
 	{
 		board_config.led_r = 6;
@@ -38,21 +38,21 @@ void board_config_init()
 		board_config.led_b = 8;
 		board_config.button = 26;
 		board_config.bat_sense = 2;
-		
+
 		board_config.spi_COPI = 12;
 		board_config.spi_CIPO = 13;
 		board_config.spi_SCK = 14;
-		
+
 		board_config.mcp_CS = 15;
 		board_config.mcp_FCLK = 16;
 		board_config.mcp_DR = 17;
-		
+
 		board_config.bmi_CS = 18;
 		board_config.bmi_INT = 20;
-		
-		board_config.amp_EN = 11; 
+
+		board_config.amp_EN = 11;
 		//amplifier turn off doesn't properly function in ver 3, where it's located on pin 30, there it shouldn't be ever turned off
-		
+
 		board_config.out_driver = 19;
 	}
 	if(board_config.version == 5)
@@ -62,7 +62,7 @@ void board_config_init()
 		board_config.led_b = 8;
 		board_config.button = 27;
 		board_config.bat_sense = 2;
-		
+
 		board_config.spi_COPI = 12;
 		board_config.spi_CIPO = 13;
 		board_config.spi_SCK = 14;
@@ -70,13 +70,13 @@ void board_config_init()
 		board_config.mcp_CS = 15;
 		board_config.mcp_FCLK = 16;
 		board_config.mcp_DR = 17;
-		
+
 		board_config.bmi_INT = 10;
 		board_config.bmi_CS = 11;
-		
+
 		board_config.amp_EN = 18;
 		board_config.sys_ON = 24;
-		
+
 		board_config.out_driver = 0xFF; //not present in version 5
 	}
 
@@ -117,7 +117,7 @@ void board_power_off()
 	//in v5, just turn off everything
 	if(board_config.version == 5)
 		NRF_GPIO->OUTCLR = (1<<board_config.sys_ON) | (1<<board_config.amp_EN);
-	
+
 	//in v4, there is no such option - instead, get everything into lower power consumption mode
 	if(board_config.version == 4)
 	{
@@ -154,14 +154,14 @@ int board_read_button()
 {
 	if(board_config.version == 4)
 		return (NRF_GPIO->IN & (1<<board_config.button)) == 0;
-	
+
 	return (NRF_GPIO->IN & (1<<board_config.button)) > 0;
 }
 
 int board_read_battery()
 {
 	uint32_t result = 0;
-	
+
 	// Configure SAADC singled-ended channel, Internal reference (0.6V) and 1/6 gain.
 	//15 us sampling time required for our battery resistor network (although probably less would work
 	//fine since there is a capacitor there as well)
@@ -176,7 +176,7 @@ int board_read_battery()
 	int ain_code = 0;
 	if(board_config.bat_sense >= 2 && board_config.bat_sense <= 5) ain_code = 1 + board_config.bat_sense - 2;
 	if(board_config.bat_sense >= 28 && board_config.bat_sense <= 32) ain_code = 5 + board_config.bat_sense - 28;
-	
+
 	NRF_SAADC->CH[0].PSELP = ain_code;
 	NRF_SAADC->CH[0].PSELN = 0;
 
@@ -217,7 +217,7 @@ int board_read_battery()
 	NRF_SAADC->TASKS_STOP = 1;
 	while (NRF_SAADC->EVENTS_STOPPED == 0);
 	NRF_SAADC->EVENTS_STOPPED = 0;
-	
+
 	float res = result;
 	res = res * 3600.0 / 4095.0; //600mV reference with 1/6 divider means 3600 is equal to 4095
 	res *= 3.0; //1:3 divider of the battery measurement circuit
