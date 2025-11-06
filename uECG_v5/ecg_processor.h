@@ -8,7 +8,7 @@ typedef struct sECGparams
 	uint32_t rr_id;
 	uint32_t data_id;
 	uint32_t ble_data_id;
-	
+
 	int buf_len;
 	int buf_pos;
 	int data_buffer[64];
@@ -16,11 +16,11 @@ typedef struct sECGparams
 	int ble_buf_pos;
 	int ble_buf_len;
 	int data_buffer_ble[64];
-	
+
 	int skin_parameter;
-	
+
 	uint8_t led_enabled;
-	
+
 	uint32_t unsent_RR_cnt;
 	uint32_t unsent_data_cnt;
 }sECGparams;
@@ -61,7 +61,7 @@ typedef struct sRdetector
 	float n_peak_vraw;
 	float p_peak_v;
 	float n_peak_v;
-	
+
 	//WARNING: all times here are in ADC steps, which runs at 976 Hz - correction
 	//is required if they are translated into milliseconds
 	int dv_p_peak_time;
@@ -73,7 +73,7 @@ typedef struct sRdetector
 	float v_dec;
 	int dec_l;
 	int dec_p;
-	
+
 	//those times are in milliseconds
 	uint32_t prev_peak_time;
 	uint32_t cur_peak_time;
@@ -89,3 +89,8 @@ int process_mcp_data();
 void ecg_processor_init();
 void set_emg_mode(int use_emg_mode);
 void set_led_indication(int use_leds);
+
+sRdetector *get_r_detector();
+sHRVparams *get_hrv_params();
+sEMGparams *get_emg_params();
+sECGparams *get_ecg_params();
