@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include "r_detector.h"
 
 typedef struct sECGparams
 {
@@ -49,37 +50,6 @@ typedef struct sHRVparams
 }sHRVparams;
 
 
-typedef struct sRdetector
-{
-	float avg_s;
-	float avg_l;
-	float avg_dv_p;
-	float avg_dv_n;
-	float dv_p_peak;
-	float dv_n_peak;
-	float p_peak_vraw;
-	float n_peak_vraw;
-	float p_peak_v;
-	float n_peak_v;
-
-	//WARNING: all times here are in ADC steps, which runs at 976 Hz - correction
-	//is required if they are translated into milliseconds
-	int dv_p_peak_time;
-	int dv_n_peak_time;
-	int R_time;
-	int R_detected;
-
-	float v_dec_avg;
-	float v_dec;
-	int dec_l;
-	int dec_p;
-
-	//those times are in milliseconds
-	uint32_t prev_peak_time;
-	uint32_t cur_peak_time;
-}sRdetector;
-
-extern sRdetector r_detector;
 extern sHRVparams hrv_params;
 extern sEMGparams emg_params;
 extern sECGparams ecg_params;

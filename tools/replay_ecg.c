@@ -10,8 +10,6 @@
 #include "../uECG_v5/mcp3911.h"
 #include "../urf_lib/urf_timer.h"
 
-void r_detector_step(float vraw);
-
 /* -------------------------------------------------------------------------
  * Host stubs for firmware dependencies
  * ------------------------------------------------------------------------- */

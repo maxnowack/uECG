@@ -17,6 +17,7 @@ SRC_FILES += \
   $(PROJ_DIR)/fft_opt.c \
   $(PROJ_DIR)/board_config.c \
   $(PROJ_DIR)/data_packing.c \
+  $(PROJ_DIR)/r_detector.c \
   $(PROJ_DIR)/ecg_processor.c \
   $(PROJ_DIR)/imu_processor.c \
   $(PROJ_DIR)/radio_functions.c \
